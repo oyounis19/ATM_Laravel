@@ -42,10 +42,10 @@ return [
         ],
 
         // Add the new admin guard
-        'admin' => [
-        'driver' => 'session',
-        'provider' => 'employees', // Use the employees provider for admin authentication
-        ],
+        // 'admin' => [
+        // 'driver' => 'session',
+        // 'provider' => 'employees', // Use the employees provider for admin authentication
+        // ],
     ],
 
     /*
@@ -72,12 +72,12 @@ return [
         ],
 
         // Add the new employees provider for admin authentication
-        'employees' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Employee::class,
-        'table' =>'employees',
-        'username' => 'username',
-        ],
+        // 'employees' => [
+        // 'driver' => 'eloquent',
+        // 'model' => App\Models\Employee::class,
+        // 'table' =>'employees',
+        // 'username' => 'username',
+        // ],
     ],
 
 

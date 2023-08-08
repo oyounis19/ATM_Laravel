@@ -4,7 +4,7 @@ use App\Models\Card;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AdminLoginController;
+// use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ATMLoginController;
 /*
 |--------------------------------------------------------------------------
@@ -36,10 +36,10 @@ Route::post('/admin/create/admin', [App\Http\Controllers\EmployeeController::cla
 
 /**************************** Dashboard *******************************/
 
-// Route::get('/admin/dashboard', function(){
-//     $user = Auth::user();
-//     return view('admin.index', compact('user'));
-// })->name('admin.dashboard')->middleware('auth');
+Route::get('/admin/dashboard', function(){
+    $user = Auth::user();
+    return view('admin.index', compact('user'));
+})->name('admin.dashboard')->middleware('auth');
 
 /**************************** Accounts Controller *******************************/
 
@@ -87,19 +87,19 @@ Route::match(['get', 'post'], '/error/{errorCode}', function($errorCode){
 
 
 
-// Admin login routes
-Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminLoginController::class, 'login']);
-    // Add more admin routes as needed
-    Route::get('/admin/dashboard', function(){
-        $user = Auth::user();
-        return view('admin.index', compact('user'));
-    })->name('admin.dashboard');
-});
+// // Admin login routes
+// Route::prefix('admin')->group(function () {
+//     Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+//     Route::post('/login', [AdminLoginController::class, 'login']);
+//     // Add more admin routes as needed
+//     Route::get('/admin/dashboard', function(){
+//         $user = Auth::user();
+//         return view('admin.index', compact('user'));
+//     })->name('admin.dashboard');
+// });
 
 
 
-// Client login routes
-Route::get('/login', [ATMLoginController::class, 'showLoginForm'])->name('client.login');
-Route::post('/login', [ATMLoginController::class, 'login']);
+// // Client login routes
+// Route::get('/login', [ATMLoginController::class, 'showLoginForm'])->name('client.login');
+// Route::post('/login', [ATMLoginController::class, 'login']);
