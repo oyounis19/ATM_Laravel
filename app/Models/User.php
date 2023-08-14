@@ -49,7 +49,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $primaryKey = 'ssn';
+    protected $primaryKey = 'ssn';// IMPORTANT
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -58,7 +58,7 @@ class User extends Authenticatable
         return $this->hasOne(Account::class, 'ssn', 'ssn');
     }
 
-    public function creditCard()
+    public function Card()
     {
         return $this->hasOne(Card::class, 'card_id', 'card_id');
     }

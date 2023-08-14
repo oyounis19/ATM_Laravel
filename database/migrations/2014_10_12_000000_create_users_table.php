@@ -19,13 +19,13 @@ return new class extends Migration
             $table->bigInteger('card_id');
             $table->string('fingerprint', 150);
             $table->string('password', 150)->nullable();// PIN
-            $table->string('name', 50);
-            $table->string('street', 30)->nullable();
+            $table->string('name', 255);
+            $table->string('street', 255)->nullable();
             $table->string('area')->nullable();
             $table->string('city')->nullable();
-            $table->string('email', 50);
+            $table->string('email', 255);
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('phone_num', 17);
+            $table->string('phone_num', 20);
             $table->rememberToken();
             $table->timestamps();
 

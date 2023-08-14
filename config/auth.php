@@ -42,10 +42,26 @@ return [
         ],
 
         // Add the new admin guard
-        // 'admin' => [
-        // 'driver' => 'session',
-        // 'provider' => 'employees', // Use the employees provider for admin authentication
-        // ],
+        'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+        ],
+
+        'admin-api' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+        ],
+
+        // Add the new Technician guard
+        'tech' => [
+        'driver' => 'session',
+        'provider' => 'techs',
+        ],
+
+        'tech-api' => [
+        'driver' => 'session',
+        'provider' => 'techs',
+        ],
     ],
 
     /*
@@ -71,13 +87,14 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // Add the new employees provider for admin authentication
-        // 'employees' => [
-        // 'driver' => 'eloquent',
-        // 'model' => App\Models\Employee::class,
-        // 'table' =>'employees',
-        // 'username' => 'username',
-        // ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+        'techs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Technician::class,
+        ],
     ],
 
 

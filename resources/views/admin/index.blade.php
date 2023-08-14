@@ -12,8 +12,8 @@
 
 @section('content')
 <div class="">
-    <h1>Welcome <span>{{$user->name}}</span></h1>
-    <h3>Account ID : <span>2196</span></h3>
+    <h1>Welcome <strong>{{$user->first_name . ' ' . $user->last_name}}</strong></h1>
+    <h3>Account ID : <span>{{$user->id}}</span></h3>
 </div>
 </section>
 @endsection

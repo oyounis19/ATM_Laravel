@@ -14,19 +14,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('atms', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('city', 30);
-            $table->string('street', 30)->nullable();
-            $table->string('area', 30)->nullable();
-            $table->bigInteger('balance');
+            $table->string('first_name', 25);
+            $table->string('last_name', 25);
+            $table->string('username', 50)->unique();
+            $table->string('password', 150);
+            $table->rememberToken();
             $table->timestamps();
         });
-        // Set the starting value for the ID column to 1280
+
+        // Set the starting value for the ID column to 2100
         if (config('database.default') === 'mysql') {
-            DB::statement('ALTER TABLE cards AUTO_INCREMENT = 1280;');
+            DB::statement('ALTER TABLE admins AUTO_INCREMENT = 2100;');
         } elseif (config('database.default') === 'pgsql') {
-            DB::statement('ALTER SEQUENCE cards_id_seq RESTART WITH 1280;');
+            DB::statement('ALTER SEQUENCE admins_id_seq RESTART WITH 2100;');
         }
     }
 
@@ -37,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atms');
+        Schema::dropIfExists('admins');
     }
 };

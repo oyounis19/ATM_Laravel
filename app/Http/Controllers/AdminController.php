@@ -3,15 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use App\Models\Employee;
+use App\Models\Admin;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class EmployeeController extends Controller
+class AdminController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
+
+    public function dashboard()
+    {
+        $user = Auth::guard('admin')->user();
+        return view('admin.index', compact('user'));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -47,9 +59,8 @@ class EmployeeController extends Controller
             $validator = Validator::make($request->all(), [
                 'first_name' => 'required|string|max:50',
                 'last_name' => 'required|string|max:50',
-                'username' => 'required|string',
-                'password' => 'required|string',
-                'role' => 'required|string|max:12',
+                'username' => 'required|string|max:255',
+                'password' => 'required|string|max:255',
             ]);
 
             if ($validator->fails()) {
@@ -60,8 +71,8 @@ class EmployeeController extends Controller
             $validatedData = $validator->validated();
             $validatedData['password'] = Hash::make($validatedData['password']);
 
-            Employee::create($validatedData);
-            return redirect()->route('admin.createAdmin')->with('success', $validatedData['role'].' Account created successfully!');
+            Admin::create($validatedData);
+            return redirect()->route('admin.createAdmin')->with('success','Admin Account created successfully!');
 
         }catch(QueryException $e){
 

@@ -14,21 +14,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('technicians', function (Blueprint $table) {
             $table->id();
             $table->string('first_name', 25);
             $table->string('last_name', 25);
             $table->string('username', 50)->unique();
             $table->string('password', 150);
-            $table->enum('role', ['Admin', 'Technician']);
+            // $table->enum('role', ['Admin', 'Technician']);
             $table->timestamps();
         });
 
         // Set the starting value for the ID column to 2100
         if (config('database.default') === 'mysql') {
-            DB::statement('ALTER TABLE cards AUTO_INCREMENT = 2100;');
+            DB::statement('ALTER TABLE technicians AUTO_INCREMENT = 6100;');
         } elseif (config('database.default') === 'pgsql') {
-            DB::statement('ALTER SEQUENCE cards_id_seq RESTART WITH 2100;');
+            DB::statement('ALTER SEQUENCE technicians_id_seq RESTART WITH 6100;');
         }
     }
 
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('technicians');
     }
 };

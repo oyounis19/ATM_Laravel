@@ -2,28 +2,41 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Traits\AdminAuthenticatesUsers;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminLoginController extends Controller
 {
-    use AdminAuthenticatesUsers;
+    // use AdminAuthenticatesUsers;
 
-    protected $guard = 'admin'; // Use the 'admin' guard for this controller
-    protected $model = Employee::class; // Use the Employee model for authentication
-
-    // protected $redirectTo = RouteServiceProvider::INDEX;
-
-    public function username()
-    {
-        return 'username';
+    public function __construct(){
+        $this->middleware('guest:admin')->except('logout');// by using guest:admin we are allowing the users to be able to login also as admin when they are logged in as user, So they are logged in as admin and user. To prevent this use 'guest' only
     }
 
-    protected function guard()
-    {
-        return Auth::guard('admin');
+    public function showLoginForm(){
+        return view('auth.admin.login');
+    }
+
+    public function login(Request $request){
+        // Validate the form data
+        $credentials = $this->validate($request, [
+            'username' => 'required|max:30',
+            'password' => 'required|min:6',
+        ]);
+        // Attempt to log the user in
+        if(Auth::guard('admin')->attempt($credentials, $request->remember))
+        {
+            // If successful, redirect to their intended location
+            // return dd(Auth::guard('admin')->user());
+            return redirect()->intended(route('admin.dashboard'));// The intended method redirects back to the link before the middleware redirected them to the /login, If there weren't any then goes to the route inside the intended method
+            // return redirect()->route('admin.dashboard');
+        }
+        // If unsuccessful, redirect back to the login with the from data
+        return redirect()->back()->withInput($request->only('username', 'remember'));
+    }
+    public function logout(){
+        Auth::guard('admin')->logout();
+        return redirect('/');
     }
 }
