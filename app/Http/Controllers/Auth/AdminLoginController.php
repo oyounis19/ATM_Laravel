@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminLoginController extends Controller
 {
-    // use AdminAuthenticatesUsers;
-
     public function __construct(){
         $this->middleware('guest:admin')->except('logout');// by using guest:admin we are allowing the users to be able to login also as admin when they are logged in as user, So they are logged in as admin and user. To prevent this use 'guest' only
     }
@@ -37,6 +35,6 @@ class AdminLoginController extends Controller
     }
     public function logout(){
         Auth::guard('admin')->logout();
-        return redirect('/');
+        return redirect('/admin/login');
     }
 }

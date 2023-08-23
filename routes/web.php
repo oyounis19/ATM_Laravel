@@ -4,31 +4,15 @@ use App\Models\Card;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\ATMLoginController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-Route::get('/', function () {
-    // return Auth::guard('admin')->logout();
-    return view('welcome');
-});
+// Auth::routes();
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 /**************************** Pass Test *******************************/
 
 Route::get('/test/pass', function(){
-    return Hash::make('12345678');
+    return Hash::make('1234');
 })->name('nn');
 
 /**************************** Error Page *******************************/
@@ -37,6 +21,10 @@ Route::match(['get', 'post'], '/error/{errorCode}', function($errorCode){
     $user = Auth::user();
     return view('errors.error', compact('errorCode', 'user'));
 })->name('errors.error')->middleware('auth:admin');
+
+
+
+/**************************** ADMIN *******************************/
 
 Route::prefix('admin')->group(function(){
 
@@ -54,43 +42,78 @@ Route::prefix('admin')->group(function(){
 
     Route::match(['get', 'post'], '/logout', [App\Http\Controllers\Auth\AdminLoginController::class, 'logout'])->name('admin.logout');
 
-    /**************************** Create Admin Account *******************************/
+    Route::middleware(['auth:admin'])->group(function(){
 
-    Route::get('/create/admin', function(){
-        $user = Auth::user();
-        return view('admin.createAdmin', compact('user'));
-    })->name('admin.createAdmin')->middleware('auth:admin');
+        /**************************** Create Admin Account *******************************/
 
-    Route::post('/create/admin', [App\Http\Controllers\AdminController::class, 'store'])->name('admin.store')->middleware('auth:admin');
+        Route::get('/create/admin', function(){
+            $user = Auth::user();
+            return view('admin.createAdmin', compact('user'));
+        })->name('admin.createAdmin');
 
-    /**************************** Accounts Controller *******************************/
+        Route::post('/create/admin', [App\Http\Controllers\AdminController::class, 'store'])->name('admin.store');
 
-    Route::resource('/accounts', App\Http\Controllers\AccountController::class)->middleware('auth:admin')->except(['show']);
+        /**************************** Accounts Controller *******************************/
 
-    /**************************** Users Controller *******************************/
+        Route::resource('/accounts', App\Http\Controllers\AccountController::class)->except(['show']);
 
-    Route::resource('/users', App\Http\Controllers\UsersController::class)->middleware('auth:admin')->except(['show']);
+        /**************************** Users Controller *******************************/
 
-    /**************************** ATMs Controller *******************************/
+        Route::resource('/users', App\Http\Controllers\UsersController::class)->except(['show']);
 
-    Route::resource('/atms', App\Http\Controllers\AtmController::class)->middleware('auth:admin')->except(['show']);
+        /**************************** ATMs Controller *******************************/
 
-    /**************************** Find Card *******************************/
+        Route::resource('/atms', App\Http\Controllers\AtmController::class)->except(['show']);
 
-    Route::get('/find/card', function(){
-        $user = Auth::user();
-        return view('admin.findcard', compact('user'));
-    })->name('admin.find.card')->middleware('auth:admin');
+        /**************************** Find Card *******************************/
 
-    Route::post('/find/card', [App\Http\Controllers\CardController::class, 'find'])->name('admin.card.find')->middleware('auth:admin');
+        Route::get('/find/card', function(){
+            $user = Auth::user();
+            return view('admin.findcard', compact('user'));
+        })->name('admin.find.card');
 
-    /**************************** Edit Card *******************************/
+        Route::post('/find/card', [App\Http\Controllers\CardController::class, 'find'])->name('admin.card.find');
 
-    Route::get('/edit/card/{id}', function($id){
-        $user = Auth::user();
-        $card = Card::findOrFail($id);
-        return view('admin.editCard', compact('user', 'card'));
-    })->name('admin.edit.card')->middleware('auth:admin');
+        /**************************** Edit Card *******************************/
 
-    Route::put('/edit/card/{id}', [App\Http\Controllers\CardController::class, 'update'])->name('admin.card.edit')->middleware('auth:admin');
+        Route::get('/edit/card/{id}', function($id){
+            $user = Auth::user();
+            $card = Card::findOrFail($id);
+            return view('admin.editCard', compact('user', 'card'));
+        })->name('admin.edit.card');
+
+        Route::put('/edit/card/{id}', [App\Http\Controllers\CardController::class, 'update'])->name('admin.card.edit');
+    });
 });
+
+/**************************** ATM ********************************/
+
+    /**************************** Login *******************************/
+
+Route::get('/', [App\Http\Controllers\Auth\UserLoginController::class, 'showLoginForm'])->name('atm.login');
+
+// CC Login
+Route::post('/', [App\Http\Controllers\Auth\UserLoginController::class, 'login'])->name('atm.login.submit');
+
+//Fingerprint Login
+// Route::post('/fingerprint/login', [App\Http\Controllers\Auth\UserLoginController::class, 'fpLogin'])->name('atm.login.fingerprint');
+
+Route::match(['get', 'post'], '/logout', [App\Http\Controllers\Auth\UserLoginController::class, 'logout'])->name('atm.logout');
+
+Route::get('/accounts', [App\Http\Controllers\AtmUsersController::class, 'accounts'])->name('atm.account');
+
+Route::post('/accounts/{id}', [App\Http\Controllers\AtmUsersController::class, 'selectAccount'])->name('account.select');
+
+Route::get('/menu', [App\Http\Controllers\AtmUsersController::class, 'showMenu'])->name('atm.menu');
+
+/************************* TECHNICIAN ****************************/
+
+        /**************************** Login *******************************/
+
+
+// Route::post('/login', [App\Http\Controllers\Auth\TechnicianLoginController::class, 'login'])->name('tech.login.submit');
+
+
+// Route::middleware(['auth:tech'])->group(function(){
+
+// });

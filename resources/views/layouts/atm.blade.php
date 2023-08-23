@@ -23,6 +23,7 @@
     <script>
         AOS.init();
     </script>
+    <script src="https://kit.fontawesome.com/e4374ef880.js" crossorigin="anonymous"></script>
     @yield('js')
 </body>
 </html>

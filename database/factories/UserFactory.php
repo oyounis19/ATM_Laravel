@@ -28,7 +28,8 @@ class UserFactory extends Factory
         return [
             'ssn' => $formattedNumber,
             'card_id' => Card::factory()->create()->id,
-            'fingerprint' => $this->faker->sha256,
+            'fingerprint' => $this->faker->filePath,
+            'fingerprint_hash' => $this->faker->sha256,
             'password' => Hash::make('password'),
             'name' => $this->faker->name,
             'street' => $this->faker->streetAddress,

@@ -12,7 +12,7 @@
             {{ session('error') }}
         </div>
     @endif
-    <form method="POST" action="{{route('users.store')}}">
+    <form method="POST" action="{{route('users.store')}}" enctype="multipart/form-data">>
         @csrf
         @method('POST')
 
@@ -116,7 +116,7 @@
             <label for="image" class="col-md-4 col-form-label text-md-right">{{ __('Fingerprint') }}</label>
 
             <div class="col-md-6">
-                <input type="file" id="image" name="fingerprint" class="form-control @error('image') is-invalid @enderror">
+                <input type="file" id="image" name="imageToUpload" class="form-control @error('image') is-invalid @enderror">
 
                 @error('image')
                     <span class="invalid-feedback" role="alert">

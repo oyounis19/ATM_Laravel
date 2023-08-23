@@ -1,0 +1,11 @@
+used: Not used because of an error
+    1- composer require spatie/image
+    2- composer require appwrite/ssim-php
+for images comparing;
+
+in php.ini:
+
+    uncommented: extension=gd
+in .env:
+
+    Added: UPLOAD_TMP_DIR=public/tmp

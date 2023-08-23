@@ -55,6 +55,7 @@
             <li>Expiration Date: {{ $card->exp_date }}</li>
             <li>CVV: {{ $card->cvv }}</li>
             <li>Account Type: {{ ucfirst($type) }}</li>
+            <li>Default PIN Code: {{ '0000' }}</li>
         </ul>
 
         <p>Please keep this information safe and do not share it with anyone.</p>

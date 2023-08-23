@@ -9,8 +9,10 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\NewAccountMail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Filesystem\Filesystem as File;
 class UsersController extends Controller
 {
     /**
@@ -41,70 +43,78 @@ class UsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      */
     public function store(Request $request) {
-        try{
-            $validatedData = $request->validate([
-                'ssn' => 'required|numeric',
-                'name' => 'required|string|max:255',
-                'street' => 'required|string|max:255',
-                'area' => 'required|string|max:255',
-                'city' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255',
-                'phone_num' => 'required|numeric',
-                'fingerprint' => 'required',// 8 MB
-                'type' => 'required|string|in:saving,gold,current',
-            ]);
+        // try{
+        //     $validatedData = $request->validate([
+        //         'imageToUpload' => 'required|mimes:jpeg,png,jpg,gif',// 8 MB
+        //         'ssn' => 'required|numeric',
+        //         'name' => 'required|string|max:255',
+        //         'street' => 'required|string|max:255',
+        //         'area' => 'required|string|max:255',
+        //         'city' => 'required|string|max:255',
+        //         'email' => 'required|string|email|max:255',
+        //         'phone_num' => 'required|numeric',
+        //         'type' => 'required|string|in:saving,gold,current',
+        //     ]);
 
-            if(User::where('ssn', $validatedData['ssn'])->first())
-                return redirect()->route('users.create')->with('error', 'User already exists!');
+        //     if(User::where('ssn', $validatedData['ssn'])->first())
+        //         return redirect()->route('users.create')->withInput()->with('error', 'User already exists!');
 
-            if(User::where('email', $validatedData['email'])->first())
-                return redirect()->route('users.create')->with('error', 'Email already exists!');
+        //     if(User::where('email', $validatedData['email'])->first())
+        //         return redirect()->route('users.create')->withInput()->with('error', 'Email already exists!');
 
-            if(User::where('phone_num', $validatedData['phone_num'])->first())
-                return redirect()->route('users.create')->with('error', 'Phone number already exists!');
+        //     if(User::where('phone_num', $validatedData['phone_num'])->first())
+        //         return redirect()->route('users.create')->withInput()->with('error', 'Phone number already exists!');
 
-            if(User::where('fingerprint', $validatedData['fingerprint'])->first())
-                return redirect()->route('users.create')->with('error', 'Fingerprint already exists!');
+        //     $hash='';
+        //     // Handle file upload for fingerprint
+        //     if ($image = $request->file('imageToUpload')) {
+        //         $fileName = $validatedData['ssn'] . '.' . $image->getClientOriginalExtension();
+        //         $image->move(public_path('tmp'), $fileName);
 
-            $ssn = $validatedData['ssn'];
-            $type = $validatedData['type'];
-            // Handle file upload for fingerprint
-            if ($request->hasFile('fingerprint')) {
-                $image = $request->file('fingerprint');
-                $fileName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('fingerprint_images'), $fileName);
+        //         $hash = hash_file('sha256', public_path('tmp\\' . $fileName));
 
-                // Save the file name to the database
-                $validatedData['fingerprint'] = $fileName;
-            }
+        //         Storage::disk('public')->delete('tmp/' . $fileName);
 
-            $card = Card::generateCardInfo();// Creating Card
+        //         if(User::where('fingerprint_hash', $hash)->first())
+        //             return redirect()->route('users.create')->withInput()->with('error', 'Fingerprint already exists!');
 
-            $cardObj = Card::create($card);
+        //         // Save the file name to the database
+        //         $validatedData['fingerprint'] = $fileName;
+        //         unset($validatedData['imageToUpload']);
 
-            Account::create([ // Creating Account
-                'ssn'  => $ssn,
-                'type' => $validatedData['type'],
-            ]);
+        //         // Save the fingerprint hash to the database
+        //         $validatedData['fingerprint_hash'] = $hash;
+        //     }
+        //     $card = Card::generateCardInfo();// Creating Card
 
-            unset($validatedData['type']);
-            // Create the user in the database
-            $validatedData['card_id'] = $card['id'];
-            $validatedData['ssn'] = $ssn;
-                // dd($ssn);
-            // dd($validatedData['ssn']);
-            $user = User::create($validatedData);
+        //     $cardObj = Card::create($card);
 
-            //Sending Mail
+        //     Account::create([ // Creating Account
+        //         'ssn'  => $validatedData['ssn'],
+        //         'type' => $validatedData['type'],
+        //     ]);
 
-            Mail::to($validatedData['email'])->send(new NewAccountMail($user, $cardObj, $type));
+        //     // Create the user in the database
+        //     $validatedData['card_id'] = $card['id'];
+        //     $validatedData['password'] = Hash::make('0000');
 
-            // Optionally, you can return a success message or redirect to a success page
-            return redirect()->route('users.index')->with('success', 'The User, Account, and Card have been successfully created and linked together.<br>An email has been sent to the user with the details of their new Card.');
-        }catch(Exception $e){
-            $errorCode = $e->getCode();
-            return redirect()->route('errors.error', compact('errorCode'));
-        }
+        //     $user = User::create($validatedData);
+
+        //     // Sending Mail
+
+        //     Mail::to($validatedData['email'])->send(new NewAccountMail($user, $cardObj, $validatedData['type']));
+
+        //     // Optionally, you can return a success message or redirect to a success page
+        //     return redirect()->route('users.index')->with('success', 'The User, Account, and Card have been successfully created and linked together. An email has been sent to the user with the details of their new Card.');
+        // }catch(Exception $e){
+        //     return $e->getMessage();
+        //     // $errorCode = $e->getCode();
+        //     // return redirect()->route('errors.error', compact('errorCode'));
+        // }
+        // Storage::disk('public')->delete('tmp/31202160105230.jpg');
+            return Storage::disk('public')->allFiles('tmp');
+        // return rmdir('public/tmp/31233213434.jpg');
+        // return Storage::disk('public')->delete('tmp/31202160105230.jpg');
     }
 
     /**

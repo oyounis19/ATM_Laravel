@@ -77,8 +77,8 @@ class Handler extends ExceptionHandler
                 $login = 'tech.login';
                 break;
 
-            default:// Since we only have 2 http guards ('admin', 'web'), So this must be web
-                $login = 'login';
+            default:
+                $login = 'atm.login';
                 break;
         }
         return redirect()->guest(route($login));
